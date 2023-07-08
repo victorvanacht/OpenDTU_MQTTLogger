@@ -49,6 +49,8 @@
             this.listBoxMQTTLog = new System.Windows.Forms.ListBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.labelMQTTPort = new System.Windows.Forms.Label();
+            this.textBoxMQTTPort = new System.Windows.Forms.TextBox();
             this.groupBoxMQTTSettings.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBoxLogfile.SuspendLayout();
@@ -56,6 +58,8 @@
             // 
             // groupBoxMQTTSettings
             // 
+            this.groupBoxMQTTSettings.Controls.Add(this.textBoxMQTTPort);
+            this.groupBoxMQTTSettings.Controls.Add(this.labelMQTTPort);
             this.groupBoxMQTTSettings.Controls.Add(this.buttonStart);
             this.groupBoxMQTTSettings.Controls.Add(this.textBoxMQTTPassword);
             this.groupBoxMQTTSettings.Controls.Add(this.labelMQTTPassword);
@@ -65,23 +69,25 @@
             this.groupBoxMQTTSettings.Controls.Add(this.labelMQTTBrokerAddress);
             this.groupBoxMQTTSettings.Location = new System.Drawing.Point(12, 27);
             this.groupBoxMQTTSettings.Name = "groupBoxMQTTSettings";
-            this.groupBoxMQTTSettings.Size = new System.Drawing.Size(433, 175);
+            this.groupBoxMQTTSettings.Size = new System.Drawing.Size(433, 194);
             this.groupBoxMQTTSettings.TabIndex = 0;
             this.groupBoxMQTTSettings.TabStop = false;
             this.groupBoxMQTTSettings.Text = "MQTT Settings";
+            this.groupBoxMQTTSettings.Enter += new System.EventHandler(this.groupBoxMQTTSettings_Enter);
             // 
             // buttonStart
             // 
-            this.buttonStart.Location = new System.Drawing.Point(329, 132);
+            this.buttonStart.Location = new System.Drawing.Point(329, 149);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(98, 34);
             this.buttonStart.TabIndex = 6;
             this.buttonStart.Text = "Start";
             this.buttonStart.UseVisualStyleBackColor = true;
+            this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
             // 
             // textBoxMQTTPassword
             // 
-            this.textBoxMQTTPassword.Location = new System.Drawing.Point(158, 91);
+            this.textBoxMQTTPassword.Location = new System.Drawing.Point(158, 120);
             this.textBoxMQTTPassword.Name = "textBoxMQTTPassword";
             this.textBoxMQTTPassword.Size = new System.Drawing.Size(269, 23);
             this.textBoxMQTTPassword.TabIndex = 5;
@@ -89,7 +95,7 @@
             // labelMQTTPassword
             // 
             this.labelMQTTPassword.AutoSize = true;
-            this.labelMQTTPassword.Location = new System.Drawing.Point(6, 94);
+            this.labelMQTTPassword.Location = new System.Drawing.Point(6, 123);
             this.labelMQTTPassword.Name = "labelMQTTPassword";
             this.labelMQTTPassword.Size = new System.Drawing.Size(91, 15);
             this.labelMQTTPassword.TabIndex = 4;
@@ -97,7 +103,7 @@
             // 
             // textBoxMQTTUsername
             // 
-            this.textBoxMQTTUsername.Location = new System.Drawing.Point(158, 62);
+            this.textBoxMQTTUsername.Location = new System.Drawing.Point(158, 91);
             this.textBoxMQTTUsername.Name = "textBoxMQTTUsername";
             this.textBoxMQTTUsername.Size = new System.Drawing.Size(269, 23);
             this.textBoxMQTTUsername.TabIndex = 3;
@@ -105,7 +111,7 @@
             // labelMQTTUsername
             // 
             this.labelMQTTUsername.AutoSize = true;
-            this.labelMQTTUsername.Location = new System.Drawing.Point(6, 65);
+            this.labelMQTTUsername.Location = new System.Drawing.Point(6, 94);
             this.labelMQTTUsername.Name = "labelMQTTUsername";
             this.labelMQTTUsername.Size = new System.Drawing.Size(94, 15);
             this.labelMQTTUsername.TabIndex = 2;
@@ -117,6 +123,7 @@
             this.textBoxMQTTBrokerAddress.Name = "textBoxMQTTBrokerAddress";
             this.textBoxMQTTBrokerAddress.Size = new System.Drawing.Size(269, 23);
             this.textBoxMQTTBrokerAddress.TabIndex = 1;
+            this.textBoxMQTTBrokerAddress.Text = "192.168.50.141";
             // 
             // labelMQTTBrokerAddress
             // 
@@ -162,7 +169,7 @@
             // 
             this.groupBoxLogfile.Controls.Add(this.textBoxLogFileName);
             this.groupBoxLogfile.Controls.Add(this.labelLogfileName);
-            this.groupBoxLogfile.Location = new System.Drawing.Point(12, 208);
+            this.groupBoxLogfile.Location = new System.Drawing.Point(12, 227);
             this.groupBoxLogfile.Name = "groupBoxLogfile";
             this.groupBoxLogfile.Size = new System.Drawing.Size(433, 61);
             this.groupBoxLogfile.TabIndex = 2;
@@ -203,14 +210,14 @@
             this.listBoxMQTTLog.ItemHeight = 15;
             this.listBoxMQTTLog.Location = new System.Drawing.Point(541, 62);
             this.listBoxMQTTLog.Name = "listBoxMQTTLog";
-            this.listBoxMQTTLog.Size = new System.Drawing.Size(247, 169);
+            this.listBoxMQTTLog.Size = new System.Drawing.Size(247, 259);
             this.listBoxMQTTLog.TabIndex = 4;
             // 
             // progressBar
             // 
             this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar.Location = new System.Drawing.Point(541, 246);
+            this.progressBar.Location = new System.Drawing.Point(541, 342);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(247, 23);
             this.progressBar.TabIndex = 5;
@@ -221,11 +228,28 @@
             this.notifyIcon.Text = "OpenDTU_MQTTLogger";
             this.notifyIcon.Visible = true;
             // 
+            // labelMQTTPort
+            // 
+            this.labelMQTTPort.AutoSize = true;
+            this.labelMQTTPort.Location = new System.Drawing.Point(6, 65);
+            this.labelMQTTPort.Name = "labelMQTTPort";
+            this.labelMQTTPort.Size = new System.Drawing.Size(63, 15);
+            this.labelMQTTPort.TabIndex = 7;
+            this.labelMQTTPort.Text = "MQTT Port";
+            // 
+            // textBoxMQTTPort
+            // 
+            this.textBoxMQTTPort.Location = new System.Drawing.Point(158, 62);
+            this.textBoxMQTTPort.Name = "textBoxMQTTPort";
+            this.textBoxMQTTPort.Size = new System.Drawing.Size(269, 23);
+            this.textBoxMQTTPort.TabIndex = 8;
+            this.textBoxMQTTPort.Text = "1883";
+            // 
             // OpenDTU_MQTTLogger
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 281);
+            this.ClientSize = new System.Drawing.Size(800, 377);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.listBoxMQTTLog);
             this.Controls.Add(this.labelMQTTLog);
@@ -267,5 +291,7 @@
         private ListBox listBoxMQTTLog;
         private ProgressBar progressBar;
         private NotifyIcon notifyIcon;
+        private TextBox textBoxMQTTPort;
+        private Label labelMQTTPort;
     }
 }
