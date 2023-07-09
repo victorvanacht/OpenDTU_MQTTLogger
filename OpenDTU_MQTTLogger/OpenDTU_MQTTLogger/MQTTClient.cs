@@ -16,7 +16,6 @@ namespace OpenDTU_MQTTLogger
     {
         private IMqttClient _client;
         private IMqttClientOptions _clientOptions;
-        private OpenDTUData _openDTUData;
         private string[] _keepConnectedTopics;
 
         public delegate void MQTTConnectedEventHandler(MqttClientConnectedEventArgs e);
@@ -27,12 +26,12 @@ namespace OpenDTU_MQTTLogger
         {
             _clientOptions = clientOptions;
             _client = new MqttFactory().CreateMqttClient();
-            //RegisterHandlers();
+
         }
 
-        public MQTTClient(IMqttClientOptions clientOptions, OpenDTUData openDTUdata) : this(clientOptions)
+        public MQTTClient(IMqttClientOptions clientOptions, MQTTConnectedEventHandler connectedHandler, MQTTMessageEventHandler messageHandler, MQTTDisconnectedEventHandler disconnectedHandler) : this(clientOptions)
         {
-            _openDTUData = openDTUdata;
+            RegisterHandlers(connectedHandler, messageHandler, disconnectedHandler);
         }
 
         public async Task PublishAsync(MqttApplicationMessage message)

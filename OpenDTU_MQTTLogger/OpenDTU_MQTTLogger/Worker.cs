@@ -108,7 +108,8 @@ namespace OpenDTU_MQTTLogger
                     if (!this.IsConnected)
                     {
                         // first get connected 
-                        ConnectToMqtt(this._brokerAddress, this._brokerPort);
+                        ConnectToMQTT(this._brokerAddress, this._brokerPort);
+                        this.IsConnected = true;
                     }
 
                     /*
@@ -179,7 +180,7 @@ namespace OpenDTU_MQTTLogger
                     }
                     */
 
-                    Thread.Sleep(1000);
+                    Thread.Sleep(1);
                 }
                 else
                 {
@@ -208,16 +209,19 @@ namespace OpenDTU_MQTTLogger
 
         */
 
-        private async Task ConnectToMqtt(string broker, int port)
+        private async void ConnectToMQTT(string broker, int port)
+        {
+            await ConnectAsync(broker, port);
+        }
+
+        private async Task ConnectAsync(string broker, int port)
         {
             IMqttClientOptions options = new MqttClientOptionsBuilder()
                 .WithClientId("OpenDTU-MQTTLogger")
                 .WithTcpServer(broker, port)
                 .Build();
 
-            _mqttClient = new MQTTClient(options, _openDTUData);
-
-            _mqttClient.RegisterHandlers(this.ConnectedHandler, this.MessageHandler, this.DisconnectedHandler);
+            _mqttClient = new MQTTClient(options, this.ConnectedHandler, this.MessageHandler, this.DisconnectedHandler);
 
             await _mqttClient.KeepConnectedAndSubscribed("solar/#");
         }
@@ -231,6 +235,7 @@ namespace OpenDTU_MQTTLogger
         {
             string topic = e.ApplicationMessage.Topic;
             string payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
+
             this.form.WriteToLog(topic + " : " + payload);
             _openDTUData.Parse(topic, payload);
             return;
