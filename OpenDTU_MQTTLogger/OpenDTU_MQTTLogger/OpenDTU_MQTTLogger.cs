@@ -28,6 +28,7 @@ namespace OpenDTU_MQTTLogger
                     _worker.brokerPort = port;
                     _worker.brokerAddress = textBoxMQTTBrokerAddress.Text;
                     _worker.loggingEnabled = true;
+                    _worker.logFilename = textBoxLogFileName.Text;
                 }
 
             }
@@ -59,6 +60,18 @@ namespace OpenDTU_MQTTLogger
                     }
                     this.listBoxMQTTLog.SelectedIndex = this.listBoxMQTTLog.Items.Count - 1;
                 }
+            }
+        }
+
+        public void SetProgressBar(int value)
+        {
+            if (this.progressBar.InvokeRequired)
+            {
+                this.progressBar.Invoke((Action)delegate { SetProgressBar(value); });
+            }
+            else
+            {
+                this.progressBar.Value = value;
             }
         }
 

@@ -20,11 +20,13 @@ namespace OpenDTU_MQTTLogger
         private bool _loggingEnabled;
         private string _brokerAddress;
         private int _brokerPort;
+        private string _logFilename;
 
 
         public bool loggingEnabled { set { this._loggingEnabled = value; } }
         public string brokerAddress { set { this._brokerAddress = value; } }
         public int brokerPort { set { this._brokerPort = value; } }
+        public string logFilename { set { this._logFilename = value; } }
         /*
         public string broadcastAddress { set { this._broadcastAddress = value; } }
 
@@ -32,7 +34,7 @@ namespace OpenDTU_MQTTLogger
         public string PVOutputSystemID { set { this._PVOutputSystemID = value; } }
         public string PVOutputAPIKey { set { this._PVOutputAPIKey = value; } }
         public string PVOutputRequestURL { set { this._PVOutputRequestURL = value; } }
-        public string logFilename { set { this._logFileName = value; } }
+        
         public int logInterval { set { this._logInterval = value; } }
         */
 
@@ -97,6 +99,9 @@ namespace OpenDTU_MQTTLogger
             return this.workerHasClosed;
         }
 
+
+        private bool csvHeaderChecked;
+        private DateTime nextEvent;
         private void WorkerThread()
         {
             DateTime previousLogEntry = new DateTime(1900, 1, 1); // a date long ago
@@ -110,77 +115,51 @@ namespace OpenDTU_MQTTLogger
                         // first get connected 
                         ConnectToMQTT(this._brokerAddress, this._brokerPort);
                         this.IsConnected = true;
+
+                        csvHeaderChecked = false;
+                        nextEvent = DateTime.Now + new TimeSpan(0, 0, 30); // 30 seconds. for start-up and getting all information.
                     }
 
-                    /*
-
-                    if (this.discoveryComplete == false)
+                    if (this.IsConnected)
                     {
-                        if (this._hostAddress.Equals(""))
+                        if (DateTime.Now > nextEvent)
                         {
-                            WriteToLog("Discovering inverter...");
-                            this.hostIPaddress = DiscoverInverters().Result;
-                            if (this.hostIPaddress.Equals("")) WriteErrorToLog("No Goodwe inverters found");
-                        }
-                        else
-                        {
-                            this.hostIPaddress = this._hostAddress; //@@@ TODO: we may want to find the IP adress via DNS-lookup or something.
-                        }
-                        this.discoveryComplete = true;
-                    }
-
-                    double secondsSindsLastLogEntry = (DateTime.Now - previousLogEntry).TotalSeconds;
-                    Console.WriteLine(secondsSindsLastLogEntry.ToString());
-
-                    if (secondsSindsLastLogEntry > _logInterval)
-                    {
-                        previousLogEntry = DateTime.Now;
-
-                        InverterTelemetry telemetry = null;
-                        if (!this.hostIPaddress.Equals(""))
-                        {
-                            telemetry = ReadTelemetry().Result;
-                        }
-
-                        if (telemetry != null)
-                        {
-                            // write to screen
-                            string? serialized = JsonSerializer.Serialize(telemetry, new JsonSerializerOptions { WriteIndented = true });
-                            WriteToLog(serialized);
-
-                            //write to PvOutput
-                            if ((!this._PVOutputSystemID.Equals("")) &&
-                                (!this._PVOutputAPIKey.Equals("")) &&
-                                (!this._PVOutputRequestURL.Equals("")))
+                            if (!csvHeaderChecked)
                             {
-                                string responseString = PostToPvOutput(telemetry).Result;
-                                WriteToLog(responseString);
+                                bool fileDoesExist = File.Exists(_logFilename);
+                                if (fileDoesExist)
+                                { // the file exists, let's see if the header is correct
+                                    using (StreamReader reader = new StreamReader(_logFilename))
+                                    {
+                                        string line = reader.ReadLine();
+                                        if (!line.Equals(_openDTUData.CsvFileHeader()))
+                                        {
+                                            // we dont actually to delete the file. Just overwriting the header will do as well.
+                                            fileDoesExist = false;
+                                        }
+                                    }
+                                }
+
+                                if (!fileDoesExist)
+                                {
+                                    // we should write a (new) file header
+                                    using (StreamWriter writer = new StreamWriter(_logFilename, false))
+                                    {
+                                        writer.WriteLine(_openDTUData.CsvFileHeader());
+                                    }
+                                    csvHeaderChecked = true;
+                                }
                             }
-                        }
-                        else // if we do not have a response, make an empty reponse with the current time stamp, so that we can log it anyway to file.
-                        {
-                            telemetry = new InverterTelemetry
+
+                            // write a line of data
+                            using (StreamWriter writer = new StreamWriter(_logFilename, true))
                             {
-                                Timestamp = DateTime.Now,
-                                ResponseIp = this.hostIPaddress,
-                                Status = InverterTelemetry.InverterStatus.Off
-                            };
+                                writer.WriteLine(_openDTUData.CsvFileData());
+                            }
+
+                            nextEvent = DateTime.Now + new TimeSpan(0, 0, 300); // 300 seconds.
                         }
-
-                        if (this._logFileName != null)
-                            GoodweLib.FileLogger.WriteToFile(this._logFileName, telemetry);
                     }
-
-                    if ((secondsSindsLastLogEntry >= 0) && (secondsSindsLastLogEntry < (_logInterval * 2))) // very first LogEntry the value for the previous time is rubbish
-                    {
-                        int percentage = Convert.ToInt32((100 * secondsSindsLastLogEntry) / _logInterval);
-                        if (percentage < 0) percentage = 0; // due to small rounding issues the percentage may be <0 or >100
-                        if (percentage > 100) percentage = 100;
-                        SetProgressBar(percentage);
-                    }
-                    */
-
-                    Thread.Sleep(1);
                 }
                 else
                 {
@@ -190,12 +169,11 @@ namespace OpenDTU_MQTTLogger
                         this.IsConnected = false;
                     }
                 }
-                Thread.Sleep(1);
+                Thread.Sleep(10);
             }
             workerHasClosed = true;
         }
 
-        /*
         private void SetProgressBar(int progress)
         {
             this.form.SetProgressBar(progress);
@@ -210,8 +188,6 @@ namespace OpenDTU_MQTTLogger
         {
             this.WriteToLog("ERROR - " + text);
         }
-
-        */
 
         private async void ConnectToMQTT(string broker, int port)
         {
@@ -251,7 +227,7 @@ namespace OpenDTU_MQTTLogger
             string topic = e.ApplicationMessage.Topic;
             string payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
 
-            this.form.WriteToLog(topic + " : " + payload);
+            WriteToLog(topic + " : " + payload);
             _openDTUData.Parse(topic, payload);
             return;
         }

@@ -201,6 +201,7 @@
             this.textBoxLogFileName.Name = "textBoxLogFileName";
             this.textBoxLogFileName.Size = new System.Drawing.Size(269, 23);
             this.textBoxLogFileName.TabIndex = 6;
+            this.textBoxLogFileName.Text = "e:\\test.csv";
             // 
             // labelLogfileName
             // 
