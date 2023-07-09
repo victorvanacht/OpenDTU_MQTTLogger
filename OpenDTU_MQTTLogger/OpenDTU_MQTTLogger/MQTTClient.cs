@@ -17,10 +17,12 @@ namespace OpenDTU_MQTTLogger
         private IMqttClient _client;
         private IMqttClientOptions _clientOptions;
         private string[] _keepConnectedTopics;
+        private MQTTLogger _logger;
 
         public delegate void MQTTConnectedEventHandler(MqttClientConnectedEventArgs e);
         public delegate void MQTTMessageEventHandler(MqttApplicationMessageReceivedEventArgs e);
         public delegate void MQTTDisconnectedEventHandler(MqttClientDisconnectedEventArgs e);
+        public delegate void MQTTLogger(string line);
 
         public MQTTClient(IMqttClientOptions clientOptions)
         {
@@ -29,8 +31,9 @@ namespace OpenDTU_MQTTLogger
 
         }
 
-        public MQTTClient(IMqttClientOptions clientOptions, MQTTConnectedEventHandler connectedHandler, MQTTMessageEventHandler messageHandler, MQTTDisconnectedEventHandler disconnectedHandler) : this(clientOptions)
+        public MQTTClient(IMqttClientOptions clientOptions, MQTTConnectedEventHandler connectedHandler, MQTTMessageEventHandler messageHandler, MQTTDisconnectedEventHandler disconnectedHandler, MQTTLogger logger) : this(clientOptions)
         {
+            _logger = logger;
             RegisterHandlers(connectedHandler, messageHandler, disconnectedHandler);
         }
 
@@ -48,7 +51,7 @@ namespace OpenDTU_MQTTLogger
         {
             await Task.WhenAll(topics.Select(async topic => await _client.SubscribeAsync(topic)));
 
-            Console.WriteLine($"Subscribed to {string.Join(',', topics)} topics");
+            Log($"Subscribed to {string.Join(',', topics)} topics");
         }
 
         public async Task DisconnectAsync()
@@ -77,6 +80,11 @@ namespace OpenDTU_MQTTLogger
             _client.UseConnectedHandler(e => { connectedHandler(e); });
             _client.UseApplicationMessageReceivedHandler( e => { messageHandler(e); });
             _client.UseDisconnectedHandler(e => { disconnectedHandler(e); });
+        }
+
+        private void Log(string line)
+        {
+            this._logger(line);
         }
 
     }

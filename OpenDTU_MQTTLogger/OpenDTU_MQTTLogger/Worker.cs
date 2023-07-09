@@ -38,22 +38,6 @@ namespace OpenDTU_MQTTLogger
 
         private bool IsConnected;
 
-        /*
-        private volatile bool _loggingEnabled;
-        private volatile string _hostAddress;
-        private volatile string _broadcastAddress;
-        private volatile string _PVOutputSystemID;
-        private volatile string _PVOutputAPIKey;
-        private volatile string _PVOutputRequestURL;
-        private volatile string _logFileName;
-        private volatile int _logInterval;
-
-        private bool discoveryComplete;
-        private GoodwePoller poller;
-        private string hostIPaddress;
-        private PvOutput pvOutput;
-        */
-
         public Worker(OpenDTU_MQTTLogger form)
         {
             this.form = form;
@@ -64,14 +48,6 @@ namespace OpenDTU_MQTTLogger
             this.workerHasClosed = false;
             this.loggingEnabled = false;
             this.IsConnected = false;
-
-            /*
-            this.discoveryComplete = false;
-
-            this.poller = new GoodwePoller(TimeSpan.FromSeconds(3));
-            this.pvOutput = new GoodweLib.PvOutput();
-            */
-
 
             this.workerThread = new Thread(WorkerThread);
             this.workerThread.IsBackground = true;
@@ -200,7 +176,7 @@ namespace OpenDTU_MQTTLogger
                 .WithTcpServer(broker, port)
                 .Build();
 
-            _mqttClient = new MQTTClient(options, this.ConnectedHandler, this.MessageHandler, this.DisconnectedHandler);
+            _mqttClient = new MQTTClient(options, this.ConnectedHandler, this.MessageHandler, this.DisconnectedHandler, this.WriteToLog);
 
             await _mqttClient.KeepConnectedAndSubscribed("solar/#");
         }
@@ -235,7 +211,5 @@ namespace OpenDTU_MQTTLogger
         {
             return;
         }
-
-
     }
 }
