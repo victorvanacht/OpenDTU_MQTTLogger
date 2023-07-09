@@ -29,8 +29,8 @@ namespace OpenDTU_MQTTLogger
                     _worker.brokerAddress = textBoxMQTTBrokerAddress.Text;
                     _worker.loggingEnabled = true;
                     _worker.logFilename = textBoxLogFileName.Text;
+                    _worker.logInterval = 300; 
                 }
-
             }
             else
             {
@@ -39,7 +39,6 @@ namespace OpenDTU_MQTTLogger
 
                 this._worker.loggingEnabled = false;
             }
-
         }
 
         public void WriteToLog(string text)

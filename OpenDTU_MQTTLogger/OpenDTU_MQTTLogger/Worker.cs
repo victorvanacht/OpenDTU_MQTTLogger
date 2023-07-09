@@ -21,22 +21,14 @@ namespace OpenDTU_MQTTLogger
         private string _brokerAddress;
         private int _brokerPort;
         private string _logFilename;
+        private int _logInterval;
 
 
         public bool loggingEnabled { set { this._loggingEnabled = value; } }
         public string brokerAddress { set { this._brokerAddress = value; } }
         public int brokerPort { set { this._brokerPort = value; } }
         public string logFilename { set { this._logFilename = value; } }
-        /*
-        public string broadcastAddress { set { this._broadcastAddress = value; } }
-
-        /*
-        public string PVOutputSystemID { set { this._PVOutputSystemID = value; } }
-        public string PVOutputAPIKey { set { this._PVOutputAPIKey = value; } }
-        public string PVOutputRequestURL { set { this._PVOutputRequestURL = value; } }
-        
         public int logInterval { set { this._logInterval = value; } }
-        */
 
         private Thread workerThread;
         private OpenDTU_MQTTLogger form;
@@ -122,7 +114,8 @@ namespace OpenDTU_MQTTLogger
 
                     if (this.IsConnected)
                     {
-                        if (DateTime.Now > nextEvent)
+                        DateTime now = DateTime.Now;
+                        if (now > nextEvent)
                         {
                             if (!csvHeaderChecked)
                             {
@@ -157,8 +150,14 @@ namespace OpenDTU_MQTTLogger
                                 writer.WriteLine(_openDTUData.CsvFileData());
                             }
 
-                            nextEvent = DateTime.Now + new TimeSpan(0, 0, 300); // 300 seconds.
+                            nextEvent = now + new TimeSpan(0, 0, _logInterval); 
                         }
+
+                        int secondsRemaining = Convert.ToInt32((nextEvent - now).TotalSeconds);
+                        int percentage = Convert.ToInt32(100 - (100*secondsRemaining) / _logInterval);
+                        if (percentage < 0) percentage = 0; // due to small rounding issues the percentage may be <0 or >100
+                        if (percentage > 100) percentage = 100;
+                        SetProgressBar(percentage);
                     }
                 }
                 else
