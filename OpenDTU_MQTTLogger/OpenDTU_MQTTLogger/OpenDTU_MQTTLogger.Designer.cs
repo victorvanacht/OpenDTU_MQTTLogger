@@ -31,7 +31,9 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OpenDTU_MQTTLogger));
             this.groupBoxMQTTSettings = new System.Windows.Forms.GroupBox();
-            this.buttonStart = new System.Windows.Forms.Button();
+            this.checkBoxStartStop = new System.Windows.Forms.CheckBox();
+            this.textBoxMQTTPort = new System.Windows.Forms.TextBox();
+            this.labelMQTTPort = new System.Windows.Forms.Label();
             this.textBoxMQTTPassword = new System.Windows.Forms.TextBox();
             this.labelMQTTPassword = new System.Windows.Forms.Label();
             this.textBoxMQTTUsername = new System.Windows.Forms.TextBox();
@@ -49,8 +51,6 @@
             this.listBoxMQTTLog = new System.Windows.Forms.ListBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.labelMQTTPort = new System.Windows.Forms.Label();
-            this.textBoxMQTTPort = new System.Windows.Forms.TextBox();
             this.groupBoxMQTTSettings.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBoxLogfile.SuspendLayout();
@@ -58,9 +58,9 @@
             // 
             // groupBoxMQTTSettings
             // 
+            this.groupBoxMQTTSettings.Controls.Add(this.checkBoxStartStop);
             this.groupBoxMQTTSettings.Controls.Add(this.textBoxMQTTPort);
             this.groupBoxMQTTSettings.Controls.Add(this.labelMQTTPort);
-            this.groupBoxMQTTSettings.Controls.Add(this.buttonStart);
             this.groupBoxMQTTSettings.Controls.Add(this.textBoxMQTTPassword);
             this.groupBoxMQTTSettings.Controls.Add(this.labelMQTTPassword);
             this.groupBoxMQTTSettings.Controls.Add(this.textBoxMQTTUsername);
@@ -73,17 +73,36 @@
             this.groupBoxMQTTSettings.TabIndex = 0;
             this.groupBoxMQTTSettings.TabStop = false;
             this.groupBoxMQTTSettings.Text = "MQTT Settings";
-            this.groupBoxMQTTSettings.Enter += new System.EventHandler(this.groupBoxMQTTSettings_Enter);
             // 
-            // buttonStart
+            // checkBoxStartStop
             // 
-            this.buttonStart.Location = new System.Drawing.Point(329, 149);
-            this.buttonStart.Name = "buttonStart";
-            this.buttonStart.Size = new System.Drawing.Size(98, 34);
-            this.buttonStart.TabIndex = 6;
-            this.buttonStart.Text = "Start";
-            this.buttonStart.UseVisualStyleBackColor = true;
-            this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
+            this.checkBoxStartStop.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBoxStartStop.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.checkBoxStartStop.Location = new System.Drawing.Point(367, 158);
+            this.checkBoxStartStop.Name = "checkBoxStartStop";
+            this.checkBoxStartStop.Size = new System.Drawing.Size(60, 30);
+            this.checkBoxStartStop.TabIndex = 9;
+            this.checkBoxStartStop.Text = "Start";
+            this.checkBoxStartStop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBoxStartStop.UseVisualStyleBackColor = true;
+            this.checkBoxStartStop.CheckedChanged += new System.EventHandler(this.checkBoxStartStop_CheckedChanged);
+            // 
+            // textBoxMQTTPort
+            // 
+            this.textBoxMQTTPort.Location = new System.Drawing.Point(158, 62);
+            this.textBoxMQTTPort.Name = "textBoxMQTTPort";
+            this.textBoxMQTTPort.Size = new System.Drawing.Size(269, 23);
+            this.textBoxMQTTPort.TabIndex = 8;
+            this.textBoxMQTTPort.Text = "1883";
+            // 
+            // labelMQTTPort
+            // 
+            this.labelMQTTPort.AutoSize = true;
+            this.labelMQTTPort.Location = new System.Drawing.Point(6, 65);
+            this.labelMQTTPort.Name = "labelMQTTPort";
+            this.labelMQTTPort.Size = new System.Drawing.Size(63, 15);
+            this.labelMQTTPort.TabIndex = 7;
+            this.labelMQTTPort.Text = "MQTT Port";
             // 
             // textBoxMQTTPassword
             // 
@@ -228,23 +247,6 @@
             this.notifyIcon.Text = "OpenDTU_MQTTLogger";
             this.notifyIcon.Visible = true;
             // 
-            // labelMQTTPort
-            // 
-            this.labelMQTTPort.AutoSize = true;
-            this.labelMQTTPort.Location = new System.Drawing.Point(6, 65);
-            this.labelMQTTPort.Name = "labelMQTTPort";
-            this.labelMQTTPort.Size = new System.Drawing.Size(63, 15);
-            this.labelMQTTPort.TabIndex = 7;
-            this.labelMQTTPort.Text = "MQTT Port";
-            // 
-            // textBoxMQTTPort
-            // 
-            this.textBoxMQTTPort.Location = new System.Drawing.Point(158, 62);
-            this.textBoxMQTTPort.Name = "textBoxMQTTPort";
-            this.textBoxMQTTPort.Size = new System.Drawing.Size(269, 23);
-            this.textBoxMQTTPort.TabIndex = 8;
-            this.textBoxMQTTPort.Text = "1883";
-            // 
             // OpenDTU_MQTTLogger
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -279,7 +281,6 @@
         private ToolStripMenuItem helpToolStripMenuItem;
         private TextBox textBoxMQTTBrokerAddress;
         private Label labelMQTTBrokerAddress;
-        private Button buttonStart;
         private TextBox textBoxMQTTPassword;
         private Label labelMQTTPassword;
         private TextBox textBoxMQTTUsername;
@@ -293,5 +294,6 @@
         private NotifyIcon notifyIcon;
         private TextBox textBoxMQTTPort;
         private Label labelMQTTPort;
+        private CheckBox checkBoxStartStop;
     }
 }

@@ -5,7 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using MQTTnet;
 using MQTTnet.Client;
+using MQTTnet.Client.Connecting;
+using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Options;
+using MQTTnet.Server;
 
 namespace OpenDTU_MQTTLogger
 {
@@ -16,11 +19,15 @@ namespace OpenDTU_MQTTLogger
         private OpenDTUData _openDTUData;
         private string[] _keepConnectedTopics;
 
+        public delegate void MQTTConnectedEventHandler(MqttClientConnectedEventArgs e);
+        public delegate void MQTTMessageEventHandler(MqttApplicationMessageReceivedEventArgs e);
+        public delegate void MQTTDisconnectedEventHandler(MqttClientDisconnectedEventArgs e);
+
         public MQTTClient(IMqttClientOptions clientOptions)
         {
             _clientOptions = clientOptions;
             _client = new MqttFactory().CreateMqttClient();
-            RegisterHandlers();
+            //RegisterHandlers();
         }
 
         public MQTTClient(IMqttClientOptions clientOptions, OpenDTUData openDTUdata) : this(clientOptions)
@@ -66,75 +73,12 @@ namespace OpenDTU_MQTTLogger
             }
         }
 
-        private void RegisterHandlers()
+        public void RegisterHandlers(MQTTConnectedEventHandler connectedHandler, MQTTMessageEventHandler messageHandler, MQTTDisconnectedEventHandler disconnectedHandler)
         {
-            _client.UseConnectedHandler(e =>
-            {
-                Console.WriteLine("### Connected with server ###");
-            });
-
-            _client.UseApplicationMessageReceivedHandler(new Action<MqttApplicationMessageReceivedEventArgs>(Test));
-
-            _client.UseDisconnectedHandler(async e =>
-            {
-                Console.WriteLine("### Disconnected from server ###");
-                await ReConnect();
-            });
+            _client.UseConnectedHandler(e => { connectedHandler(e); });
+            _client.UseApplicationMessageReceivedHandler( e => { messageHandler(e); });
+            _client.UseDisconnectedHandler(e => { disconnectedHandler(e); });
         }
 
-        private void Test(MqttApplicationMessageReceivedEventArgs e)
-        {
-            _openDTUData.Parse(e.ApplicationMessage.Topic, Encoding.UTF8.GetString(e.ApplicationMessage.Payload));
-
-            /*
-                        string topic = e.ApplicationMessage.Topic;
-                        string payLoad = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
-
-
-
-
-                        bool parsed = false;
-                        foreach (KeyValuePair<string, Item> kvp in _openDTUData.items)
-                        {
-                            if (topic.Equals(kvp.Value.topic))
-                            {
-                                kvp.Value.value = payLoad;
-                                parsed = true;
-                            }
-                        }
-
-                        if (!parsed)
-                        {
-                            string[] subTopic = topic.Split('/');
-                            if (subTopic[0].Equals("solar")) // make sure we are listening to the solar topic
-                            {
-                                System.Int128 serialNumber;
-
-                                if (Int128.TryParse(subTopic[1], out serialNumber))
-                                {
-                                    _openDTUData.AddInverter(subTopic[1]);  //@@@@@ This doesnt work, because now the order in which the inverters are in the list is random!!!
-                                    parsed = true;
-                                }
-                            }
-                        }
-                        //if (!parsed)
-                        {
-                            Console.WriteLine(topic + " --> " + payLoad);
-                        }
-
-
-                        /*
-
-
-
-                        Console.WriteLine();
-                        Console.WriteLine("# Received application message #");
-                        Console.WriteLine($"From topic: {topic}");
-                        Console.WriteLine($"Payload: {payLoad}");
-                        Console.WriteLine($"Qos: {e.ApplicationMessage.QualityOfServiceLevel}");
-                        Console.WriteLine($"Retain: {e.ApplicationMessage.Retain}");
-                        Console.WriteLine();
-                        */
-        }
     }
 }
