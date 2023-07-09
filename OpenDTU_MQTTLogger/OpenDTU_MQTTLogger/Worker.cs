@@ -184,7 +184,11 @@ namespace OpenDTU_MQTTLogger
                 }
                 else
                 {
-                    //this.discoveryComplete = false;
+                    if (this.IsConnected)
+                    { // we still need to disconnect!
+                        DisconnectFromMQTT();
+                        this.IsConnected = false;
+                    }
                 }
                 Thread.Sleep(1);
             }
@@ -225,6 +229,17 @@ namespace OpenDTU_MQTTLogger
 
             await _mqttClient.KeepConnectedAndSubscribed("solar/#");
         }
+
+        private async void DisconnectFromMQTT()
+        {
+            await DisconnectAsync();
+        }
+
+        private async Task DisconnectAsync()
+        {
+            await _mqttClient.DisconnectAsync();
+        }
+
 
         private void ConnectedHandler(MqttClientConnectedEventArgs e)
         {
