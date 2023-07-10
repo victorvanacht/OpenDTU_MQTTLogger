@@ -11,6 +11,8 @@ namespace OpenDTU_MQTTLogger
         {
             InitializeComponent();
 
+            notifyIcon.Visible = false;
+
             this.textBoxMQTTBrokerAddress.Text = Properties.Settings.Default.MQTTBrokerAddress;
             this.textBoxMQTTPort.Text = Properties.Settings.Default.MQTTBrokerPort.ToString();
             this.textBoxMQTTUsername.Text = Properties.Settings.Default.MQTTUsername;
@@ -101,6 +103,38 @@ namespace OpenDTU_MQTTLogger
 
             this._worker.Close(5);
             System.Windows.Forms.Application.Exit();
+        }
+
+        private void OpenDTU_MQTTLoggerForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                this.WindowState = FormWindowState.Minimized;
+            }
+            else
+            {
+
+            }
+        }
+
+        private void OpenDTU_MQTTLogger_Resize(object sender, EventArgs e)
+        {
+            //if the form is minimized  
+            //hide it from the task bar  
+            //and show the system tray icon (represented by the NotifyIcon control)  
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                Hide();
+                notifyIcon.Visible = true;
+            }
+        }
+
+        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            Show();
+            this.WindowState = FormWindowState.Normal;
+            notifyIcon.Visible = false;
         }
     }
 }

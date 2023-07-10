@@ -31,6 +31,8 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OpenDTU_MQTTLogger));
             this.groupBoxMQTTSettings = new System.Windows.Forms.GroupBox();
+            this.textBoxLogInterval = new System.Windows.Forms.TextBox();
+            this.labelLogInterval = new System.Windows.Forms.Label();
             this.checkBoxStartStop = new System.Windows.Forms.CheckBox();
             this.textBoxMQTTPort = new System.Windows.Forms.TextBox();
             this.labelMQTTPort = new System.Windows.Forms.Label();
@@ -51,8 +53,6 @@
             this.listBoxMQTTLog = new System.Windows.Forms.ListBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.textBoxLogInterval = new System.Windows.Forms.TextBox();
-            this.labelLogInterval = new System.Windows.Forms.Label();
             this.groupBoxMQTTSettings.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBoxLogfile.SuspendLayout();
@@ -77,6 +77,23 @@
             this.groupBoxMQTTSettings.TabIndex = 0;
             this.groupBoxMQTTSettings.TabStop = false;
             this.groupBoxMQTTSettings.Text = "MQTT Settings";
+            // 
+            // textBoxLogInterval
+            // 
+            this.textBoxLogInterval.Location = new System.Drawing.Point(158, 163);
+            this.textBoxLogInterval.Name = "textBoxLogInterval";
+            this.textBoxLogInterval.Size = new System.Drawing.Size(53, 23);
+            this.textBoxLogInterval.TabIndex = 11;
+            this.textBoxLogInterval.Text = "300";
+            // 
+            // labelLogInterval
+            // 
+            this.labelLogInterval.AutoSize = true;
+            this.labelLogInterval.Location = new System.Drawing.Point(6, 166);
+            this.labelLogInterval.Name = "labelLogInterval";
+            this.labelLogInterval.Size = new System.Drawing.Size(69, 15);
+            this.labelLogInterval.TabIndex = 10;
+            this.labelLogInterval.Text = "Log interval";
             // 
             // checkBoxStartStop
             // 
@@ -179,7 +196,7 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -252,23 +269,7 @@
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "OpenDTU_MQTTLogger";
             this.notifyIcon.Visible = true;
-            // 
-            // textBoxLogInterval
-            // 
-            this.textBoxLogInterval.Location = new System.Drawing.Point(158, 163);
-            this.textBoxLogInterval.Name = "textBoxLogInterval";
-            this.textBoxLogInterval.Size = new System.Drawing.Size(53, 23);
-            this.textBoxLogInterval.TabIndex = 11;
-            this.textBoxLogInterval.Text = "300";
-            // 
-            // labelLogInterval
-            // 
-            this.labelLogInterval.AutoSize = true;
-            this.labelLogInterval.Location = new System.Drawing.Point(6, 166);
-            this.labelLogInterval.Name = "labelLogInterval";
-            this.labelLogInterval.Size = new System.Drawing.Size(69, 15);
-            this.labelLogInterval.TabIndex = 10;
-            this.labelLogInterval.Text = "Log interval";
+            this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseDoubleClick);
             // 
             // OpenDTU_MQTTLogger
             // 
@@ -284,6 +285,8 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "OpenDTU_MQTTLogger";
             this.Text = "OpenDTU_MQTTLogger";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OpenDTU_MQTTLoggerForm_FormClosing);
+            this.Resize += new System.EventHandler(this.OpenDTU_MQTTLogger_Resize);
             this.groupBoxMQTTSettings.ResumeLayout(false);
             this.groupBoxMQTTSettings.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
