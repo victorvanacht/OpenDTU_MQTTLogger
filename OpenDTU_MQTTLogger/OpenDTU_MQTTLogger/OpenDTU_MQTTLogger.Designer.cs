@@ -51,6 +51,8 @@
             this.listBoxMQTTLog = new System.Windows.Forms.ListBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.textBoxLogInterval = new System.Windows.Forms.TextBox();
+            this.labelLogInterval = new System.Windows.Forms.Label();
             this.groupBoxMQTTSettings.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBoxLogfile.SuspendLayout();
@@ -58,6 +60,8 @@
             // 
             // groupBoxMQTTSettings
             // 
+            this.groupBoxMQTTSettings.Controls.Add(this.textBoxLogInterval);
+            this.groupBoxMQTTSettings.Controls.Add(this.labelLogInterval);
             this.groupBoxMQTTSettings.Controls.Add(this.checkBoxStartStop);
             this.groupBoxMQTTSettings.Controls.Add(this.textBoxMQTTPort);
             this.groupBoxMQTTSettings.Controls.Add(this.labelMQTTPort);
@@ -100,9 +104,9 @@
             this.labelMQTTPort.AutoSize = true;
             this.labelMQTTPort.Location = new System.Drawing.Point(6, 65);
             this.labelMQTTPort.Name = "labelMQTTPort";
-            this.labelMQTTPort.Size = new System.Drawing.Size(63, 15);
+            this.labelMQTTPort.Size = new System.Drawing.Size(100, 15);
             this.labelMQTTPort.TabIndex = 7;
-            this.labelMQTTPort.Text = "MQTT Port";
+            this.labelMQTTPort.Text = "MQTT Broker Port";
             // 
             // textBoxMQTTPassword
             // 
@@ -175,8 +179,9 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -248,6 +253,23 @@
             this.notifyIcon.Text = "OpenDTU_MQTTLogger";
             this.notifyIcon.Visible = true;
             // 
+            // textBoxLogInterval
+            // 
+            this.textBoxLogInterval.Location = new System.Drawing.Point(158, 163);
+            this.textBoxLogInterval.Name = "textBoxLogInterval";
+            this.textBoxLogInterval.Size = new System.Drawing.Size(53, 23);
+            this.textBoxLogInterval.TabIndex = 11;
+            this.textBoxLogInterval.Text = "300";
+            // 
+            // labelLogInterval
+            // 
+            this.labelLogInterval.AutoSize = true;
+            this.labelLogInterval.Location = new System.Drawing.Point(6, 166);
+            this.labelLogInterval.Name = "labelLogInterval";
+            this.labelLogInterval.Size = new System.Drawing.Size(69, 15);
+            this.labelLogInterval.TabIndex = 10;
+            this.labelLogInterval.Text = "Log interval";
+            // 
             // OpenDTU_MQTTLogger
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -296,5 +318,7 @@
         private TextBox textBoxMQTTPort;
         private Label labelMQTTPort;
         private CheckBox checkBoxStartStop;
+        private TextBox textBoxLogInterval;
+        private Label labelLogInterval;
     }
 }

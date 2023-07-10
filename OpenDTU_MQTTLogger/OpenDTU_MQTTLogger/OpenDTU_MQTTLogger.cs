@@ -11,6 +11,13 @@ namespace OpenDTU_MQTTLogger
         {
             InitializeComponent();
 
+            this.textBoxMQTTBrokerAddress.Text = Properties.Settings.Default.MQTTBrokerAddress;
+            this.textBoxMQTTPort.Text = Properties.Settings.Default.MQTTBrokerPort.ToString();
+            this.textBoxMQTTUsername.Text = Properties.Settings.Default.MQTTUsername;
+            this.textBoxMQTTPassword.Text = Properties.Settings.Default.MQTTPassword;
+            this.textBoxLogFileName.Text = Properties.Settings.Default.LogFilename;
+            this.textBoxLogInterval.Text = Properties.Settings.Default.LogInterval.ToString();
+
             _worker = new Worker(this);
         }
 
@@ -27,9 +34,13 @@ namespace OpenDTU_MQTTLogger
                 {
                     _worker.brokerPort = port;
                     _worker.brokerAddress = textBoxMQTTBrokerAddress.Text;
-                    _worker.loggingEnabled = true;
                     _worker.logFilename = textBoxLogFileName.Text;
-                    _worker.logInterval = 300; 
+                    int logInterval = 300; 
+                    int.TryParse(textBoxLogInterval.Text, out logInterval);
+                    _worker.logInterval = logInterval;
+
+                    _worker.loggingEnabled = true;
+
                 }
             }
             else
@@ -74,6 +85,22 @@ namespace OpenDTU_MQTTLogger
             }
         }
 
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int logInterval = 300;
+            int.TryParse(textBoxLogInterval.Text, out logInterval);
+            int port = 1883;
+            int.TryParse(textBoxMQTTPort.Text, out port);
 
+            Properties.Settings.Default.MQTTBrokerAddress = this.textBoxMQTTBrokerAddress.Text;
+            Properties.Settings.Default.MQTTBrokerPort = port;
+            Properties.Settings.Default.MQTTUsername = this.textBoxMQTTUsername.Text;
+            Properties.Settings.Default.MQTTPassword = this.textBoxMQTTPassword.Text;
+            Properties.Settings.Default.LogFilename = this.textBoxLogFileName.Text;
+            Properties.Settings.Default.LogInterval = logInterval;
+
+            this._worker.Close(5);
+            System.Windows.Forms.Application.Exit();
+        }
     }
 }

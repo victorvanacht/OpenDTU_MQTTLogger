@@ -58,6 +58,7 @@ namespace OpenDTU_MQTTLogger
         // returns true if closed successfully
         public bool Close(int maximumWaitingSeconds)
         {
+            _loggingEnabled = false;
             this.workerShouldClose = true;
             DateTime t0 = DateTime.Now;
             while ((this.workerHasClosed == false) && (DateTime.Now - t0).TotalSeconds < maximumWaitingSeconds)
