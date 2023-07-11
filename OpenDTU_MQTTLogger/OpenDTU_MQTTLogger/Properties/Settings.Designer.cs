@@ -94,5 +94,17 @@ namespace OpenDTU_MQTTLogger.Properties {
                 this["LogInterval"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Started {
+            get {
+                return ((bool)(this["Started"]));
+            }
+            set {
+                this["Started"] = value;
+            }
+        }
     }
 }

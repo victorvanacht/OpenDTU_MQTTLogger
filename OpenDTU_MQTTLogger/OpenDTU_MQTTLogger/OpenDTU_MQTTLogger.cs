@@ -21,6 +21,11 @@ namespace OpenDTU_MQTTLogger
             this.textBoxLogInterval.Text = Properties.Settings.Default.LogInterval.ToString();
 
             _worker = new Worker(this);
+
+            if (Properties.Settings.Default.Started)
+            {
+                this.checkBoxStartStop.Checked = true;
+            }
         }
 
         private void checkBoxStartStop_CheckedChanged(object sender, EventArgs e)
@@ -100,6 +105,9 @@ namespace OpenDTU_MQTTLogger
             Properties.Settings.Default.MQTTPassword = this.textBoxMQTTPassword.Text;
             Properties.Settings.Default.LogFilename = this.textBoxLogFileName.Text;
             Properties.Settings.Default.LogInterval = logInterval;
+            Properties.Settings.Default.Started = this.checkBoxStartStop.Checked;
+
+            Properties.Settings.Default.Save();
 
             this._worker.Close(5);
             System.Windows.Forms.Application.Exit();
