@@ -237,28 +237,28 @@ namespace OpenDTU_MQTTLogger
 
         public string CsvFileHeader()
         {
-            string s = "DateTime, IPAddress, Hostname, PowerAC, EnergyTotal, EnergyDay, PowerDC, ";
+            string s = "TimeStamp, IPAddress, Hostname, PowerAC, EnergyTotal, EnergyDay, PowerDC, ";
             foreach (KeyValuePair<string, Inverter> inverterKvp in inverter)
             {
-                s += inverterKvp.Key + ":name, ";
-                s += inverterKvp.Key + ":currentAC, ";
-                s += inverterKvp.Key + ":voltageAC, ";
-                s += inverterKvp.Key + ":frequency, ";
-                s += inverterKvp.Key + ":powerAC, ";
-                s += inverterKvp.Key + ":powerDC, ";
-                s += inverterKvp.Key + ":temperature, ";
-                s += inverterKvp.Key + ":energyTotal, ";
-                s += inverterKvp.Key + ":energyDay, ";
+                s += inverterKvp.Key + ":Name, ";
+                s += inverterKvp.Key + ":CurrentAC, ";
+                s += inverterKvp.Key + ":VoltageAC, ";
+                s += inverterKvp.Key + ":Frequency, ";
+                s += inverterKvp.Key + ":Power, ";
+                s += inverterKvp.Key + ":PowerDC, ";
+                s += inverterKvp.Key + ":Temperature, ";
+                s += inverterKvp.Key + ":EnergyTotal, ";
+                s += inverterKvp.Key + ":EnergyDay, ";
 
                 foreach (KeyValuePair<int, InverterChannel> channelKvp in inverterKvp.Value.channel)
                 {
                     string t = inverterKvp.Key + "[" + channelKvp.Key.ToString() + "]:";
-                    s += t + "name, ";
-                    s += t + "current, ";
-                    s += t + "voltage, ";
-                    s += t + "power, ";
-                    s += t + "energyTotal, ";
-                    s += t + "energyDay, ";
+                    s += t + "Name, ";
+                    s += t + "Current, ";
+                    s += t + "Voltage, ";
+                    s += t + "Power, ";
+                    s += t + "EnergyTotal, ";
+                    s += t + "EnergyDay, ";
                 }
             }
             s = s.Substring(0, s.Length - 2); // remove the last ", ";
