@@ -23,6 +23,8 @@ namespace OpenDTU_MQTTLogger
         private string _logFilename;
         private int _logInterval;
 
+        private DateTime lastMessage;
+
 
         public bool loggingEnabled { set { this._loggingEnabled = value; } }
         public string brokerAddress { set { this._brokerAddress = value; } }
@@ -83,6 +85,7 @@ namespace OpenDTU_MQTTLogger
                     {
                         // first get connected 
                         ConnectToMQTT(this._brokerAddress, this._brokerPort);
+                        lastMessage = DateTime.Now;
                         this.IsConnected = true;
 
                         csvHeaderChecked = false;
@@ -92,6 +95,13 @@ namespace OpenDTU_MQTTLogger
                     if (this.IsConnected)
                     {
                         DateTime now = DateTime.Now;
+                        // check if the last received message is not from ages ago, if so restart the connection.
+                        if ((now-lastMessage).TotalSeconds > 60)
+                        {
+                            DisconnectFromMQTT();
+                            ConnectToMQTT(this._brokerAddress, this._brokerPort);
+                        }
+
                         if (now > nextEvent)
                         {
                             if (!csvHeaderChecked)
@@ -205,6 +215,7 @@ namespace OpenDTU_MQTTLogger
 
             WriteToLog(topic + " : " + payload);
             _openDTUData.Parse(topic, payload);
+            lastMessage = DateTime.Now;
             return;
         }
 
